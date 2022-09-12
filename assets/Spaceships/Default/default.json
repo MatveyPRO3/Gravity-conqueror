@@ -1,0 +1,94 @@
+{
+  "name": "Default",
+  "codename": "Def",
+  "ID": 123456789,
+  "image": "assets/Spaceships/Default/default.png",
+  "image_size": [150, 150],
+  "gun": {
+    "gun_power": 100000,
+    "bullet_r": 5,
+    "bullet_mass": 100,
+    "bullet_elasticity": 0.99,
+    "bullet_friction": 0.2,
+    "bullet_image": "assets/bullet.png"
+  },
+  "engine": {
+    "forward_acceleration": 12000,
+    "side_acceleration": 0.05
+  },
+  "polygons": [
+    {
+      "mass": 7,
+      "elasticity": 0.5,
+      "friction": 0.9,
+      "vertices": [
+        [42, -32],
+        [61, -43],
+        [99, -21],
+        [99.5, 16],
+        [63, 38],
+        [42, 26]
+      ]
+    },
+    {
+      "mass": 13,
+      "elasticity": 0.5,
+      "friction": 0.9,
+      "vertices": [
+        [-6, -68],
+        [12, -59],
+        [40, -34],
+        [42, 26],
+        [13, 52],
+        [-5, 60]
+      ]
+    },
+    {
+      "mass": 6,
+      "elasticity": 0.5,
+      "friction": 0.9,
+      "vertices": [
+        [-37, -126],
+        [-7, -70],
+        [-5, 61],
+        [-35, 120],
+        [-55.5, 10],
+        [-55.5, -16],
+        [-38, -126]
+      ]
+    },
+    {
+      "mass": 5,
+      "elasticity": 0.5,
+      "friction": 0.9,
+      "vertices": [
+        [-60, -14],
+        [-88, -37],
+        [-88, 32],
+        [-58, 9]
+      ]
+    },
+    {
+      "mass": 0.5,
+      "elasticity": 0.5,
+      "friction": 0.9,
+      "vertices": [
+        [-24, -109],
+        [-5, -108],
+        [-6, -103],
+        [-22, -104]
+      ]
+    },
+    {
+      "mass": 0.5,
+      "elasticity": 0.5,
+      "friction": 0.9,
+      "vertices": [
+        [-17, 91],
+        [6, 91],
+        [8, 98],
+        [-21, 99]
+      ]
+    }
+  ]
+}
