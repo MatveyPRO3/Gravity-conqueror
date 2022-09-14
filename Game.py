@@ -84,7 +84,7 @@ class Game():
             (rand.randint(0, self.area_size_width),
                 rand.randint(0, self.area_size_height)),
             path + "assets/Asteroids/asteroid.png",
-            (asteroid_size := rand.randint(30, 150), asteroid_size),
+            (asteroid_size := rand.randint(3, 30), asteroid_size),
             1/900 * asteroid_size**2,
             0.7,
             0.7,
@@ -101,11 +101,12 @@ class Game():
                                     0.5,
                                     275)
 
+        # Appending all sprites to groups
         self.main_group = MainGroup(self.COLORS["default_bg"],
                                     *self.decorations,
                                     self.spaceship,
                                     *self.asteroids,
-                                    self.planet,)
+                                    self.planet)
 
     def read_config(self, filename):
 

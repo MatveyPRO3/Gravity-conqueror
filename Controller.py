@@ -78,3 +78,6 @@ def read_and_apply_input(game):
             if game.debug:
                 pos = pygame.mouse.get_pos()
                 print(list((pos[0]-502, pos[1]-302)), ",")
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_g:
+            game.spaceship.destruct()

@@ -2,8 +2,9 @@ import json
 import pygame
 from pymunk import Body, Poly, Circle
 from math import cos, sin, degrees, radians, dist, atan2
-from GameObjects import Asteroid
-from random import choice
+from GameObjects import Asteroid, Decoration
+from random import choice, randint
+from os import listdir
 
 
 class Spaceship(pygame.sprite.Sprite):
@@ -51,6 +52,14 @@ class Spaceship(pygame.sprite.Sprite):
 
         self.space.add(self.body, *self.shapes)
 
+        #
+        self.explosion = Decoration.DynamicDecoration(
+            "assets/Spaceships/Default/explosions",
+            0.6,
+            self.body.position,
+            50,
+            "explosion")
+
         self.bullets = []
         self.bullet_offsets = [pygame.math.Vector2(
             50, 50), pygame.math.Vector2(-50, 50)]
@@ -94,6 +103,35 @@ class Spaceship(pygame.sprite.Sprite):
                                    self.gun["bullet_r"]/2)
         bullet.body.apply_impulse_at_local_point(impulse)
         self.groups()[0].add(bullet)
+
+    def destruct(self):
+
+        self.explosion.position = self.body.position
+        self.explosion.animating = True
+        self.explosion.loops = 1
+
+        self.groups()[0].add(self.explosion)
+
+        num_debris = randint(*self.num_debris)
+        for _ in range(num_debris):
+            fragment = Asteroid.Asteroid(self.space,
+                                         self.body.position,
+                                         self.debris_folder_path+"/" +
+                                         choice(
+                                             listdir(self.debris_folder_path)),
+                                         (r:=randint(20,30), r),
+                                         5,
+                                         0.7,
+                                         0.7,
+                                         r/2-2)
+            fragment.body.velocity = self.body.velocity
+            fragment.body.apply_impulse_at_local_point(
+                (randint(-10000, 10000), randint(-10000, 10000)))
+            self.groups()[0].add(fragment)
+
+        self.groups()[0].remove(self)
+
+        self.space.remove(*self.shapes, self.body)
 
     def read_from_json(self, file):
         with open(file, "r") as f:

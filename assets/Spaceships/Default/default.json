@@ -4,6 +4,8 @@
   "ID": 123456789,
   "image": "assets/Spaceships/Default/default.png",
   "image_size": [150, 150],
+  "num_debris": [10, 40],
+  "debris_folder_path": "assets/Spaceships/Default/debris",
   "gun": {
     "gun_power": 100000,
     "bullet_r": 5,
@@ -13,7 +15,7 @@
     "bullet_image": "assets/bullet.png"
   },
   "engine": {
-    "forward_acceleration": 12000,
+    "forward_acceleration": 20000,
     "side_acceleration": 0.05
   },
   "polygons": [
