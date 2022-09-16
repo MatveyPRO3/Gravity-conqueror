@@ -52,19 +52,32 @@ class Spaceship(pygame.sprite.Sprite):
 
         self.space.add(self.body, *self.shapes)
 
-        #
+        # Explosion
         self.explosion = Decoration.DynamicDecoration(
-            "assets/Spaceships/Default/explosions",
+            self.self_explosion_anim_path,
             0.6,
             self.body.position,
             50,
-            "explosion")
+            "explosion",
+            loops=1)
+        self.explosion_circle = Decoration.DynamicDecoration(
+            self.self_explosion_circle_anim_path,
+            0.6,
+            self.body.position,
+            0,
+            "explosion",
+            loops=1,
+            atype="size")
 
         self.bullets = []
         self.bullet_offsets = [pygame.math.Vector2(
             50, 50), pygame.math.Vector2(-50, 50)]
         self.dists_to_bullet = [[dist([0, 0], self.bullet_offsets[0]), atan2(self.bullet_offsets[0][0], self.bullet_offsets[0][1])], [dist(
             [0, 0], self.bullet_offsets[1]), atan2(self.bullet_offsets[1][0], self.bullet_offsets[1][1])]]
+
+    def detect_main_group(self):
+        # This way of implementation cause in init it isn't yet defined
+        self.mainGroup = self.groups()[0]
 
     def update(self):
 
@@ -102,15 +115,17 @@ class Spaceship(pygame.sprite.Sprite):
                                    self.gun["bullet_elasticity"],
                                    self.gun["bullet_r"]/2)
         bullet.body.apply_impulse_at_local_point(impulse)
-        self.groups()[0].add(bullet)
+        self.mainGroup.add(bullet)
 
     def destruct(self):
 
         self.explosion.position = self.body.position
         self.explosion.animating = True
-        self.explosion.loops = 1
+        self.explosion_circle.position = self.body.position
+        self.explosion_circle.animating = True
 
-        self.groups()[0].add(self.explosion)
+        self.mainGroup.add(self.explosion)
+        self.mainGroup.add(self.explosion_circle)
 
         num_debris = randint(*self.num_debris)
         for _ in range(num_debris):
@@ -119,7 +134,7 @@ class Spaceship(pygame.sprite.Sprite):
                                          self.debris_folder_path+"/" +
                                          choice(
                                              listdir(self.debris_folder_path)),
-                                         (r:=randint(20,30), r),
+                                         (r := randint(20, 30), r),
                                          5,
                                          0.7,
                                          0.7,
@@ -127,9 +142,16 @@ class Spaceship(pygame.sprite.Sprite):
             fragment.body.velocity = self.body.velocity
             fragment.body.apply_impulse_at_local_point(
                 (randint(-10000, 10000), randint(-10000, 10000)))
-            self.groups()[0].add(fragment)
+            self.mainGroup.add(fragment)
 
-        self.groups()[0].remove(self)
+        # explosion impulse
+        self.mainGroup.create_explosion_impulse(
+            self.body.position, self.self_explosion_impulse, self.self_explosion_radius)
+
+        # Impulse animation
+        ...
+
+        self.mainGroup.remove(self)
 
         self.space.remove(*self.shapes, self.body)
 

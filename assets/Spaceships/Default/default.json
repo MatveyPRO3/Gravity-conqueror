@@ -6,6 +6,10 @@
   "image_size": [150, 150],
   "num_debris": [10, 40],
   "debris_folder_path": "assets/Spaceships/Default/debris",
+  "self_explosion_radius": 5000,
+  "self_explosion_impulse": 3500,
+  "self_explosion_anim_path": "assets/Spaceships/Default/explosions",
+  "self_explosion_circle_anim_path": "assets/Spaceships/Default/explosion_circle.png",
   "gun": {
     "gun_power": 100000,
     "bullet_r": 5,

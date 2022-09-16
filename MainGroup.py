@@ -1,12 +1,14 @@
 import pygame
+from math import dist, sin, cos, atan2
 
 
 class MainGroup(pygame.sprite.Group):
-    def __init__(self, bg_color, *sprites) -> None:
+    def __init__(self, bg_color, space, *sprites) -> None:
 
         super().__init__(*sprites)
         self.display_surface = pygame.display.get_surface()
         self.bg_color = bg_color
+        self.space = space
 
         # camera offset
         self.offset = pygame.math.Vector2(0, 0)
@@ -36,6 +38,17 @@ class MainGroup(pygame.sprite.Group):
             self.internal_surf_size, pygame.SRCALPHA)
         self.internal_surface_size_vector = pygame.math.Vector2(
             self.internal_surf_size)
+
+    def create_explosion_impulse(self, pos, impulse, r):
+
+        for body in self.space.bodies:
+            if (d := dist(body.position, pos)) < r:
+
+                calculated_impulse = impulse * (d / r)
+                angle = atan2(body.position[1]-pos[1], body.position[0]-pos[0])
+                x_projection = cos(angle) * calculated_impulse
+                y_projection = sin(angle) * calculated_impulse
+                body.apply_impulse_at_local_point((x_projection, y_projection))
 
     def draw(self):
 

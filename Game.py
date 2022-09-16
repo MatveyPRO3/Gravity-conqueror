@@ -103,10 +103,12 @@ class Game():
 
         # Appending all sprites to groups
         self.main_group = MainGroup(self.COLORS["default_bg"],
+                                    self.space,
                                     *self.decorations,
                                     self.spaceship,
                                     *self.asteroids,
                                     self.planet)
+        self.spaceship.detect_main_group()
 
     def read_config(self, filename):
 

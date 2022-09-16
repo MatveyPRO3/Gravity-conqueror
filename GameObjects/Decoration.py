@@ -24,39 +24,62 @@ class StaticDecoration(pygame.sprite.Sprite):
 
 
 class DynamicDecoration(pygame.sprite.Sprite):
-    def __init__(self, frames_path, animation_speed, pos, angle, default_frame_name, size="default", loops=float("inf")) -> None:
+    def __init__(self, frames_path, animation_speed, pos, angle, default_frame_name, size="default", loops=float("inf"), atype="standard") -> None:
 
         super().__init__()
 
-        self.default_frame_name = default_frame_name
-        self.animating = False
+        self.atype = atype
         self.loops = loops
+        self.animating = False
         self.position = pos
         self.angle = angle
-        self.size = size
-        self.frames_path = frames_path
         self.animation_speed = animation_speed
-        self.initialize_frames()
-        self.cur_frame = 0
-        self.image = self.frames[self.cur_frame]
+        self.frames_path = frames_path
 
-        # pygame
+        if atype == "standard":
+            self.default_frame_name = default_frame_name
+            self.size = size
+            self.initialize_frames()
+            self.cur_frame = 0
+            self.image = self.frames[self.cur_frame]
+
+        elif atype == "size":
+            self.origin_image = pygame.image.load(self.frames_path).convert_alpha()
+            self.anim_size = 1
+            self.image = pygame.transform.smoothscale(
+                self.origin_image, (1, 1))
+            self.max_anim_size = self.origin_image.get_size()[0]*2.5
 
         self.rect = self.image.get_rect(center=self.position)
 
     def update(self) -> None:
 
         if self.animating:
-            self.cur_frame += self.animation_speed
 
-            if self.cur_frame > len(self.frames):
-                self.cur_frame = 0
-                self.loops -= 1
-                if self.loops == 0:
+            if self.atype == "standard":
+
+                self.cur_frame += self.animation_speed
+
+                if self.cur_frame > len(self.frames):
+                    self.cur_frame = 0
+                    self.loops -= 1
+                    if self.loops == 0:
+                        self.groups()[0].remove(self)
+                        return
+
+                self.image = self.frames[int(self.cur_frame)]
+
+            elif self.atype == "size":
+
+                if self.anim_size >= self.max_anim_size:
                     self.groups()[0].remove(self)
-                return
+                    return
 
-            self.image = self.frames[int(self.cur_frame)]
+                self.image = pygame.transform.smoothscale(self.origin_image, (int(self.anim_size),
+                                                                              int(self.anim_size)))
+                self.image.set_alpha(255-self.anim_size/5)
+                self.anim_size += self.animation_speed * 50
+
             self.rect = self.image.get_rect(center=self.position)
 
         return super().update()
