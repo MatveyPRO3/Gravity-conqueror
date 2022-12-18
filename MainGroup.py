@@ -42,9 +42,9 @@ class MainGroup(pygame.sprite.Group):
     def create_explosion_impulse(self, pos, impulse, r):
 
         for body in self.space.bodies:
-            if (d := dist(body.position, pos)) < r:
+            if (d := dist(body.position, pos)) < r and d != 0:
 
-                calculated_impulse = impulse * (d / r)
+                calculated_impulse = impulse * (r / d)
                 angle = atan2(body.position[1]-pos[1], body.position[0]-pos[0])
                 x_projection = cos(angle) * calculated_impulse
                 y_projection = sin(angle) * calculated_impulse

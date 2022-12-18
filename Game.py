@@ -8,13 +8,14 @@ import Controller as controller
 import random as rand
 import os
 from math import degrees
+from config import *
 
 path = r""
 
 
 class Game():
 
-    def __init__(self, config_file, debug=False):
+    def __init__(self, debug=False):
 
         pygame.init()
         pygame.font.init()
@@ -22,34 +23,25 @@ class Game():
         self.debug = debug
         self.running = True
 
-        self.config_file = config_file
-        self.read_config(self.config_file)
-
-        self.window_caption = self.WINDOW["caption"]
-        self.window_icon = pygame.image.load(path + self.WINDOW["icon"])
-        self.window_width, self.window_height = self.WINDOW["width"], self.WINDOW["height"]
-        self.MAX_FPS = self.GAME["max_fps"]
-        self.pymunk_physics_calculating_speed_step = self.GAME[
-            "pymunk_physics_calculating_speed_step"]
-        self.dt = self.pymunk_physics_calculating_speed_step / self.MAX_FPS
-        self.num_decorations = self.GAME["num_decorations"]
-        self.num_asteroids = self.GAME["num_asteroids"]
-        self.area_size_width = self.GAME["area_size_width"]
-        self.area_size_height = self.GAME["area_size_height"]
+        self.__dict__ |= GAME.__dict__
+        self.window = WINDOW.__dict__
+        self.colors = COLORS.__dict__
+        
+        self.window_icon = pygame.image.load(path + self.window["icon"])
+        self.dt = self.pymunk_physics_calculating_speed_step / self.max_fps
 
         # pygame
-
         self.clock = pygame.time.Clock()
-        pygame.display.set_caption(self.window_caption)
+        pygame.display.set_caption(self.window["caption"])
         pygame.display.set_icon(self.window_icon)
         self.screen = pygame.display.set_mode(
-            (self.window_width, self.window_height), pygame.RESIZABLE)
+            (self.window["width"], self.window["height"]), pygame.RESIZABLE)
 
         # pymunk
 
         self.space = pymunk.Space()
         self.space.gravity = (
-            self.GAME["default_gravity_x"], self.GAME["default_gravity_y"])
+            self.default_gravity_x, self.default_gravity_y)
         self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
 
         # pygame
@@ -102,31 +94,13 @@ class Game():
                                     275)
 
         # Appending all sprites to groups
-        self.main_group = MainGroup(self.COLORS["default_bg"],
+        self.main_group = MainGroup(self.colors["default_bg"],
                                     self.space,
                                     *self.decorations,
                                     self.spaceship,
                                     *self.asteroids,
                                     self.planet)
         self.spaceship.detect_main_group()
-
-    def read_config(self, filename):
-
-        self.config = ConfigParser()
-        self.config.read(filename)
-        self.__dict__ |= {section: {} for section in self.config.sections()}
-
-        for section in self.config.sections():
-            for item in self.config.items(section):
-
-                if item[1].isdigit():
-                    self.__dict__[section] |= {item[0]: int(item[1])}
-
-                elif item[1].replace('.', '', 1).isdigit():
-                    self.__dict__[section] |= {item[0]: float(item[1])}
-
-                else:
-                    self.__dict__[section] |= {item[0]: item[1]}
 
     def draw_text(self):
         text = f"[Pos]: {round(self.spaceship.body.position[0],1)} | {round(self.spaceship.body.position[1],1)}\n[Rot]: {round(degrees(self.spaceship.body.angle),1)}\n[Vel]: {round(self.spaceship.body.velocity[0],1)} | {round(self.spaceship.body.velocity[1],1)}\n[RotVel]: {round(self.spaceship.body.angular_velocity,1)}"
@@ -151,12 +125,12 @@ class Game():
             self.draw_all()
             self.space.step(self.dt)
             pygame.display.update()
-            self.clock.tick(self.MAX_FPS)
+            self.clock.tick(self.max_fps)
 
             controller.read_and_apply_input(self)
 
 
 if __name__ == '__main__':
 
-    game = Game(debug=0, config_file=path+"config.cfg")
+    game = Game(debug=0)
     game.run()
