@@ -21,7 +21,7 @@ def read_and_apply_input(game):
     # Shooting
 
     if keys[pygame.K_w]:
-        if random()>0.7:
+        if random() > 0.7:
             game.spaceship.shoot()
 
     for event in pygame.event.get():
@@ -46,7 +46,7 @@ def read_and_apply_input(game):
         # restart
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-            game.__init__(game.config, debug=game.debug)
+            game.__init__(debug=game.debug)
 
         # Controlling main engine
 
